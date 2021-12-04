@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Professors at BU \n</title>
+  </head>
+  <body>
+    <h1>Professors</h1>
+    <br> 
+
+    <table class="table">
+        <thead>
+          <tr>
+            <th>First</th>
+            <th >Last</th>
+            <th>Department</th>
+            <th>Rating</th>
+            <th>NumRatings</th>
+          </tr>
+        </thead>
+        <tbody id = "myTable">
+          
+        </tbody>
+      </table>
+
+      
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+  </body>
+  <script>
+    var myArray
+
+
+
+
+
+
+    
+    $.ajax({
+      method: 'GET',
+      url: "https://www.ratemyprofessors.com/filter/professor/?&page=1&filter=teacherlastname_sort_s+asc&query=*%3A*&queryoption=TEACHER&queryBy=schoolId&sid=124",
+      success:function(response){
+        var pages = Math.ceil((response.remaining+20)/20)
+        for(var j=1; j<=pages; j++){
+          grabPage(j)
+        }
+      }
+    })
+
+        function grabPage(i){
+          $.ajax({
+            method: 'GET',
+            url: "https://www.ratemyprofessors.com/filter/professor/?&page="+String(i)+"&filter=teacherlastname_sort_s+asc&query=*%3A*&queryoption=TEACHER&queryBy=schoolId&sid=124",
+            success:function(response){
+                myArray=response
+                buildTable(myArray)
+            }
+        })
+
+        }
+
+        function buildTable(data){
+            var table = document.getElementById('myTable')
+            console.log(data.professors.length)
+            for(var i = 0; i < data.professors.length; i++){
+              if(data.professors[i].tDept=="Computer Science"){
+                var row = `<tr>
+                        <td>${data.professors[i].tFname}</td>
+                        <td>${data.professors[i].tLname}</td>
+                        <td>${data.professors[i].tDept}</td>
+                        <td>${data.professors[i].overall_rating}</td>
+                        <td>${data.professors[i].tNumRatings}</td>
+                    </tr>`
+                table.innerHTML += row
+                }
+            }
+        }
+
+</script>
+</html>
